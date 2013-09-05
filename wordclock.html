@@ -1,0 +1,209 @@
+<script type="text/processing">
+// Version 0.01
+// Last updated: Spet 4, 2013
+// 
+
+int fontsize = 24;
+var pos = [];
+var frameCounter = 0;    
+var my;
+
+
+void setup() {
+	size(1366, 768);
+  frameRate(60);
+	stroke(0);
+	fill(255,255,255);
+	textFont(createFont("Arial",fontsize));
+	background(54, 143, 40);
+	noStroke();
+}
+    
+    
+var clockarray = [];
+for(var x = 0; x < 11; x++){
+    clockarray[x] = [];    
+    for(var y = 0; y < 10; y++){ 
+        clockarray[x][y] = 0;
+    }
+}
+
+var zeroArray = function() {
+   
+    for (var x = 0; x< 11; x++){
+        for (var y = 0; y < 10; y++) {
+            clockarray[x][y] = 0;
+        }  
+    }  
+};
+
+var randArray = function() {
+   
+    for (var x = 0; x< 11; x++){
+        for (var y = 0; y < 10; y++) {
+            var r = random(100);
+            if (r < 50) {
+                clockarray[x][y] = 0; 
+            }
+            else
+            {
+                clockarray[x][y] = 1;
+            }
+        }  
+    }  
+};
+    
+
+void SetWord( var x, var y, var length ) {        
+    for( var i = 0 ; i < length ; i++ ) {
+        clockarray[x+i][y] = 1 ;    
+    }         
+}
+
+void SetHour( var hour ) {
+    switch( hour ) {
+        case 1:
+            SetWord( 0,5,3); // One hour
+            break;
+        case 2:
+            SetWord( 8,6,3); // Two hour
+            break;
+        case 3:
+            SetWord( 6,5,5); // Three hour
+            break;
+        case 4:
+            SetWord( 0,6,4);// Four hour
+            break;
+        case 5:
+            SetWord( 4,6,4); // Five Hour
+            break;
+        case 6:
+            SetWord( 3,5,3); // Six hour
+            break;
+        case 7:
+            SetWord( 0,8,5); // Seven hour       
+            break;
+        case 8:
+            SetWord( 0,7,5); // Eight hour            
+            break;
+        case 9:
+            SetWord( 7,4,4); // Nine hour
+            break;
+        case 10:
+            SetWord( 0,9,3); // Ten hour
+            break;
+        case 11:
+            SetWord( 5,7,6); // Eleven hour
+            break;
+        case 12:
+            SetWord( 5,8,6);// Twelve hour
+            break;
+            
+    }
+}   
+    
+
+void draw() {
+    resetMatrix();
+    background(0, 0, 0);
+
+    zeroArray();
+    
+    var c_width = 58;
+    var c_height = 61;
+    
+    var orginx = 185;
+    var orginy = 80;
+    
+    
+    
+    // Logic    
+    SetWord( 0,0,2); // It
+    SetWord( 3,0,2); // Is 
+    
+    
+    var date = new Date();
+    var hours = date.getHours()%12;
+    if (hours==0) hours = 12;
+    var minutes = date.getMinutes()-(date.getMinutes()%5);
+    if (date.getMinutes()%5 > 2) minutes = minutes + 5;
+    if (minutes == 60) { minutes = 0; hours = hours+1;}
+    
+    var parts_of_minutes = Math.floor(minutes / 5) ; 
+    switch( parts_of_minutes ) {
+        default: 
+        case 0:
+            SetWord( 5,9,6); // Oclock
+            break;
+        case 1:
+            SetWord( 6,2,4); // Five min
+            SetWord( 0,4,4); // PAST
+            break;
+        case 2:
+            SetWord( 5,3,3); // Ten min
+            SetWord( 0,4,4); // PAST
+            break;
+        case 3:
+            SetWord( 0,1,1); // A
+            SetWord( 2,1,7); // Quarter 
+            SetWord( 0,4,4); // PAST
+            break;
+        case 4:
+            SetWord( 0,2,6); // Twenty 
+            SetWord( 0,4,4); // PAST            
+            break; 
+        case 5:
+            SetWord( 0,2,6); // Twenty 
+            SetWord( 6,2,4); // Five min
+            SetWord( 0,4,4); // PAST            
+            break; 
+        case 6:
+            SetWord( 0,3,4); // Half    
+            SetWord( 0,4,4); // PAST            
+            break; 
+        case 7:
+            SetWord( 0,2,6); // Twenty 
+            SetWord( 6,2,4); // Five min
+            SetWord( 9,3,2); // To
+            break; 
+        case 8:
+            SetWord( 0,2,6); // Twenty 
+            SetWord( 9,3,2); // To
+            break; 
+        case 9:
+            SetWord( 0,1,1); // A
+            SetWord( 2,1,7); // Quarter  
+            SetWord( 9,3,2); // To
+            break; 
+        case 10:
+            SetWord( 5,3,3); // Ten min
+            SetWord( 9,3,2); // To
+            break; 
+        case 11:
+            SetWord( 6,2,4); // Five min
+            SetWord( 9,3,2); // To
+            break; 
+    }
+    
+    if( parts_of_minutes > 6 ) {
+        SetHour( hours + 1 ); 
+    } else {
+        SetHour( hours ) ; 
+    }
+    
+    
+    
+    for (var x = 0; x < 11; x++){
+        for (var y = 0; y < 10; y++) {
+            resetMatrix();
+            
+            translate(orginx + x*c_width, orginy + y*c_height );
+            
+            if (clockarray[x][y] === 1) {
+                rect(0,0,c_width-1,c_height-1);
+            }
+    }
+  }    
+};
+</script>
+<canvas style="border: 1px solid black;"></canvas>
