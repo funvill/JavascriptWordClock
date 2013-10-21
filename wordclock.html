@@ -123,13 +123,16 @@ void draw() {
     
     
     var date = new Date();
-    var hours = date.getHours()%12;
-    if (hours==0) hours = 12;
+    var hours = date.getHours();
     var minutes = date.getMinutes()-(date.getMinutes()%5);
     if (date.getMinutes()%5 > 2) minutes = minutes + 5;
     if (minutes == 60) { minutes = 0; hours = hours+1;}
-    
     var parts_of_minutes = Math.floor(minutes / 5) ; 
+    if( parts_of_minutes > 6 ) { hours = hours + 1 ); 
+
+    hours = hours % 12;
+    if (hours==0) hours = 12;
+    
     switch( parts_of_minutes ) {
         default: 
         case 0:
@@ -185,13 +188,8 @@ void draw() {
             break; 
     }
     
-    if( parts_of_minutes > 6 ) {
-        SetHour( hours + 1 ); 
-    } else {
-        SetHour( hours ) ; 
-    }
-    
-    
+    SetHour( hours ) ; 
+
     
     for (var x = 0; x < 11; x++){
         for (var y = 0; y < 10; y++) {
